@@ -1,33 +1,56 @@
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import { CheckCircle2 } from "lucide-react";
+import { DollarSign, Package, BarChart3, Users, Mic, CheckCircle2, Clock, Circle } from "lucide-react";
 
 const timeline = [
   {
     phase: "Phase 1",
-    title: "Finance & Operations Agents",
-    status: "Active",
-    features: ["Expense tracking", "Invoice management", "Task automation", "Real-time analytics"],
+    title: "Finance Agent",
+    icon: DollarSign,
+    description: "Automated expense tracking and cashflow analysis",
+    status: "complete",
   },
   {
     phase: "Phase 2",
-    title: "Inventory Agent",
-    status: "Coming Soon",
-    features: ["Stock management", "Reorder alerts", "Supplier tracking", "Warehouse optimization"],
+    title: "Operations Agent",
+    icon: Package,
+    description: "Task automation and inventory management",
+    status: "complete",
   },
   {
     phase: "Phase 3",
-    title: "CRM Agent",
-    status: "Planned",
-    features: ["Customer insights", "Lead tracking", "Sales pipeline", "Communication hub"],
+    title: "Analytics Agent",
+    icon: BarChart3,
+    description: "Real-time insights and predictive analytics",
+    status: "in-progress",
   },
   {
     phase: "Phase 4",
-    title: "Analytics Agent",
-    status: "Planned",
-    features: ["Predictive analytics", "Business forecasting", "Trend analysis", "Custom reports"],
+    title: "CRM Agent",
+    icon: Users,
+    description: "Customer relationship management",
+    status: "planned",
+  },
+  {
+    phase: "Phase 5",
+    title: "Voice Agent",
+    icon: Mic,
+    description: "Natural language interactions",
+    status: "planned",
   },
 ];
+
+const getStatusIcon = (status: string) => {
+  if (status === "complete") return CheckCircle2;
+  if (status === "in-progress") return Clock;
+  return Circle;
+};
+
+const getStatusColor = (status: string) => {
+  if (status === "complete") return "text-accent";
+  if (status === "in-progress") return "text-secondary";
+  return "text-muted-foreground";
+};
 
 export const AboutSection = () => {
   return (
@@ -49,57 +72,90 @@ export const AboutSection = () => {
         </motion.div>
 
         <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-primary via-secondary to-accent hidden lg:block" />
+          {/* Vertical Timeline Line */}
+          <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-accent via-secondary to-muted" />
 
-          <div className="space-y-12">
-            {timeline.map((item, index) => (
-              <motion.div
-                key={item.phase}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className={`flex items-center gap-8 ${
-                  index % 2 === 0 ? "lg:flex-row" : "lg:flex-row-reverse"
-                } flex-col`}
-              >
-                <div className="flex-1 lg:text-right lg:even:text-left">
-                  <Card className="glass-card border-primary/20 hover:scale-105 transition-transform">
+          <div className="space-y-8">
+            {timeline.map((item, index) => {
+              const Icon = item.icon;
+              const StatusIcon = getStatusIcon(item.status);
+              const statusColor = getStatusColor(item.status);
+              
+              return (
+                <motion.div
+                  key={item.phase}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  viewport={{ once: true }}
+                  className="relative"
+                >
+                  {/* Timeline Dot */}
+                  <motion.div
+                    animate={{
+                      scale: item.status === "in-progress" ? [1, 1.3, 1] : 1,
+                      boxShadow: item.status === "in-progress"
+                        ? [
+                            "0 0 0 0 hsl(var(--secondary) / 0.7)",
+                            "0 0 0 10px hsl(var(--secondary) / 0)",
+                            "0 0 0 0 hsl(var(--secondary) / 0)",
+                          ]
+                        : "none",
+                    }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className={`absolute left-6 w-5 h-5 rounded-full flex items-center justify-center ${
+                      item.status === "complete"
+                        ? "bg-accent glow-effect"
+                        : item.status === "in-progress"
+                        ? "bg-secondary"
+                        : "bg-muted"
+                    }`}
+                  >
+                    <StatusIcon className="w-3 h-3 text-background" />
+                  </motion.div>
+
+                  <Card
+                    className="ml-20 glass-card hover:scale-105 transition-all border-l-4 border-l-transparent hover:border-l-primary"
+                  >
                     <CardContent className="p-6">
-                      <div className="flex items-center gap-2 mb-2 lg:justify-end lg:even:justify-start justify-center">
-                        <span className="text-sm font-semibold text-primary">{item.phase}</span>
-                        <span
-                          className={`text-xs px-2 py-1 rounded-full ${
-                            item.status === "Active"
-                              ? "bg-accent/20 text-accent"
-                              : "bg-muted/20 text-muted-foreground"
+                      <div className="flex items-start gap-4">
+                        <div
+                          className={`p-3 rounded-xl ${
+                            item.status === "complete"
+                              ? "bg-accent/20"
+                              : item.status === "in-progress"
+                              ? "bg-secondary/20"
+                              : "bg-muted/20"
                           }`}
                         >
-                          {item.status}
-                        </span>
+                          <Icon className={`w-6 h-6 ${statusColor}`} />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className="text-sm font-semibold text-muted-foreground tracking-wider">
+                              {item.phase}
+                            </span>
+                            <span
+                              className={`text-xs px-2 py-1 rounded-full ${
+                                item.status === "complete"
+                                  ? "bg-accent/20 text-accent"
+                                  : item.status === "in-progress"
+                                  ? "bg-secondary/20 text-secondary"
+                                  : "bg-muted/20 text-muted-foreground"
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                          </div>
+                          <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                          <p className="text-muted-foreground">{item.description}</p>
+                        </div>
                       </div>
-                      <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-                      <ul className="space-y-2">
-                        {item.features.map((feature) => (
-                          <li key={feature} className="flex items-center gap-2 lg:justify-end lg:even:justify-start justify-center text-sm text-muted-foreground">
-                            <CheckCircle2 className="w-4 h-4 text-accent" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
                     </CardContent>
                   </Card>
-                </div>
-
-                {/* Timeline dot */}
-                <div className="hidden lg:flex w-8 h-8 rounded-full glass-card border-2 border-primary items-center justify-center flex-shrink-0 relative z-10">
-                  <div className="w-3 h-3 rounded-full bg-primary" />
-                </div>
-
-                <div className="flex-1" />
-              </motion.div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </div>

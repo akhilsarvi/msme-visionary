@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, DollarSign, CreditCard } from "lucide-react";
-import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { TrendingUp, DollarSign, CreditCard, Target } from "lucide-react";
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadialBarChart, RadialBar, Legend } from "recharts";
 
 const expenseData = [
   { month: "Jan", amount: 45000 },
@@ -19,6 +19,12 @@ const cashflowData = [
   { month: "Apr", inflow: 101000, outflow: 61000 },
   { month: "May", inflow: 95000, outflow: 55000 },
   { month: "Jun", inflow: 110000, outflow: 67000 },
+];
+
+const kpiData = [
+  { name: "Profit Margin", value: 68, fill: "hsl(var(--primary))" },
+  { name: "Cashflow Ratio", value: 85, fill: "hsl(var(--secondary))" },
+  { name: "ROI", value: 72, fill: "hsl(var(--accent))" },
 ];
 
 export const FinancePanel = () => {
@@ -94,6 +100,47 @@ export const FinancePanel = () => {
                   strokeWidth={2}
                 />
               </AreaChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* KPI Radial Charts */}
+          <div className="glass-card p-4 rounded-xl">
+            <h3 className="text-sm font-semibold mb-4 flex items-center gap-2">
+              <Target className="w-4 h-4 text-accent" />
+              Performance KPIs
+            </h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <RadialBarChart
+                cx="50%"
+                cy="50%"
+                innerRadius="20%"
+                outerRadius="90%"
+                data={kpiData}
+                startAngle={180}
+                endAngle={0}
+              >
+                <RadialBar
+                  background
+                  dataKey="value"
+                  cornerRadius={10}
+                />
+                <Legend
+                  iconSize={10}
+                  layout="vertical"
+                  verticalAlign="middle"
+                  align="right"
+                  wrapperStyle={{
+                    color: "hsl(var(--foreground))",
+                  }}
+                />
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "hsl(var(--card))",
+                    border: "1px solid hsl(var(--border))",
+                    borderRadius: "8px",
+                  }}
+                />
+              </RadialBarChart>
             </ResponsiveContainer>
           </div>
 
